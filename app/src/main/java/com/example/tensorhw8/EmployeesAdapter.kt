@@ -8,11 +8,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
+const val EMPLOYEE_TYPE = 1
+const val DEPARTMENT_TYPE = 2
+
 class EmployeesAdapter(
     private val deleteAction: (Int) -> Unit
-) : RecyclerView.Adapter<EmployeesAdapter.EmployeeViewHolder>() {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private val employees = mutableListOf<Employee>()
+    private val employees = mutableListOf<Any>()
 
     class EmployeeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val photo: ImageView = view.findViewById(R.id.photo)
@@ -21,31 +24,62 @@ class EmployeesAdapter(
         val deleteButton: ImageView = view.findViewById(R.id.delete_button)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EmployeeViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.employee_list_item, parent, false)
-        return EmployeeViewHolder(view)
+    class DepartmentViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val departmentTitle: TextView = view.findViewById(R.id.department_title)
     }
 
-    override fun onBindViewHolder(holder: EmployeeViewHolder, position: Int) {
-        val employee = employees[position]
-        with(holder) {
-            fullName.text = employee.fullName
-            department.text = employee.department
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
+        when (viewType) {
+            // todo fix DRY violation
+            EMPLOYEE_TYPE -> {
+                val view =
+                    LayoutInflater.from(parent.context)
+                        .inflate(R.layout.employee_list_item, parent, false)
+                EmployeeViewHolder(view)
+            }
+            DEPARTMENT_TYPE -> {
+                val view =
+                    LayoutInflater.from(parent.context)
+                        .inflate(R.layout.department_list_item, parent, false)
+                DepartmentViewHolder(view)
+            }
+            else -> throw IllegalAccessException("Wrong ItemViewType")
+        }
 
-            Glide.with(photo.context)
-                .load(employee.photoUrl)
-                .centerCrop()
-                .into(photo)
 
-            deleteButton.setOnClickListener {
-                deleteAction(position)
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (holder) {
+            is EmployeeViewHolder -> {
+                with(holder) {
+                    val employee = employees[position] as Employee
+                    fullName.text = employee.fullName
+                    department.text = employee.department
+
+                    Glide.with(photo.context)
+                        .load(employee.photoUrl)
+                        .centerCrop()
+                        .into(photo)
+
+                    deleteButton.setOnClickListener {
+                        deleteAction(position)
+                    }
+                }
+            }
+            is DepartmentViewHolder -> {
+                holder.departmentTitle.text = (employees[position] as Department).title
             }
         }
     }
 
     override fun getItemCount() = employees.size
 
-    fun reload(data: List<Employee>) {
+    override fun getItemViewType(position: Int) = when (employees[position]) {
+        is Employee -> EMPLOYEE_TYPE
+        is Department -> DEPARTMENT_TYPE
+        else -> throw IllegalAccessException("Wrong ItemViewType")
+    }
+
+    fun reload(data: List<Any>) {
         employees.clear()
         employees.addAll(data)
         notifyDataSetChanged()

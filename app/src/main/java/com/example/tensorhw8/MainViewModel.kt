@@ -6,8 +6,9 @@ import androidx.lifecycle.ViewModel
 
 class MainViewModel : ViewModel() {
 
-    private val mutableEmployees = MutableLiveData(Employee.getMockEmployees())
-    val employees: LiveData<List<Employee>>
+    private val mutableEmployees =
+        MutableLiveData(Employee.getMockEmployees() + Department.getMockDepartments())
+    val employees: LiveData<List<Any>>
         get() = mutableEmployees
 
     fun addRandomEmployee() {
