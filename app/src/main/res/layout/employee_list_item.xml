@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/photo"
+        android:layout_width="@dimen/photo"
+        android:layout_height="@dimen/photo"
+        style="@style/Widget.Material3.Button.TextButton.Icon"
+        app:layout_constraintEnd_toStartOf="@id/full_name"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/ic_portrait"
+        android:contentDescription="@string/employee_photo" />
+
+    <TextView
+        android:id="@+id/full_name"
+        style="@style/TextAppearance.Material3.TitleMedium"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/photo"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/delete_button"
+        app:layout_constraintBottom_toTopOf="@id/department"
+        tools:text="Антонов Константин" />
+
+    <TextView
+        android:id="@+id/department"
+        style="@style/TextAppearance.Material3.TitleSmall"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/gray"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/full_name"
+        app:layout_constraintStart_toStartOf="@id/full_name"
+        app:layout_constraintTop_toBottomOf="@id/full_name"
+        tools:text="Android" />
+
+    <ImageView
+        android:id="@+id/delete_button"
+        android:layout_width="@dimen/delete_button"
+        android:layout_height="@dimen/delete_button"
+        android:src="@drawable/ic_delete"
+        style="@style/Widget.Material3.Button.TextButton.Icon"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/full_name"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/delete_button" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

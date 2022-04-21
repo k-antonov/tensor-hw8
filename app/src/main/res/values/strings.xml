@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">TensorHW8</string>
+    <string name="floating_button">BUtton to add random employee</string>
+    <string name="employee_photo">Employee photo</string>
+    <string name="delete_button">Delete button</string>
 </resources>
