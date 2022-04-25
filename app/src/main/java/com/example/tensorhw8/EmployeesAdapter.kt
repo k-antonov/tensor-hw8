@@ -5,17 +5,41 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.tensorhw8.model.Department
+import com.example.tensorhw8.model.Employee
+import com.example.tensorhw8.model.ListItem
 
 const val EMPLOYEE_TYPE = 1
 const val DEPARTMENT_TYPE = 2
+
+class EmployeesDiffUtilCallback(
+    private val oldList: List<ListItem>,
+    private val newList: List<ListItem>
+) : DiffUtil.Callback() {
+    override fun getOldListSize() = oldList.size
+    override fun getNewListSize() = newList.size
+
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val oldEmployee = oldList[oldItemPosition]
+        val newEmployee = newList[newItemPosition]
+        return oldEmployee.id == newEmployee.id
+    }
+
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val oldEmployee = oldList[oldItemPosition]
+        val newEmployee = newList[newItemPosition]
+        return oldEmployee == newEmployee
+    }
+}
 
 class EmployeesAdapter(
     private val deleteAction: (Int) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private val employees = mutableListOf<Any>()
+    private val employees = mutableListOf<ListItem>()
 
     class EmployeeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val photo: ImageView = view.findViewById(R.id.photo)
@@ -30,7 +54,6 @@ class EmployeesAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
-            // todo fix DRY violation
             EMPLOYEE_TYPE -> {
                 val view =
                     LayoutInflater.from(parent.context)
@@ -53,7 +76,7 @@ class EmployeesAdapter(
                 with(holder) {
                     val employee = employees[position] as Employee
                     fullName.text = employee.fullName
-                    department.text = employee.department
+                    department.text = employee.department.title
 
                     Glide.with(photo.context)
                         .load(employee.photoUrl)
@@ -79,9 +102,11 @@ class EmployeesAdapter(
         else -> throw IllegalAccessException("Wrong ItemViewType")
     }
 
-    fun reload(data: List<Any>) {
+    fun reload(data: List<ListItem>) {
+        val diffUtilCallback = EmployeesDiffUtilCallback(employees, data)
+        val diffResult = DiffUtil.calculateDiff(diffUtilCallback)
         employees.clear()
         employees.addAll(data)
-        notifyDataSetChanged()
+        diffResult.dispatchUpdatesTo(this)
     }
 }
