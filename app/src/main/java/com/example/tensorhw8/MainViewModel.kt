@@ -1,5 +1,6 @@
 package com.example.tensorhw8
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,20 +10,33 @@ import com.example.tensorhw8.model.ListItem
 
 class MainViewModel : ViewModel() {
 
-    private val mutableEmployees =
+    private val mutableItems =
         MutableLiveData(Employee.getMockEmployees() + Department.getMockDepartments())
-    val employees: LiveData<List<ListItem>>
-        get() = mutableEmployees
+    val items: LiveData<List<ListItem>>
+        get() = mutableItems
 
     fun addRandomEmployee() {
-        mutableEmployees.value = mutableEmployees.value?.toMutableList()?.apply {
+        mutableItems.value = mutableItems.value?.toMutableList()?.apply {
             add(Employee.getMockEmployees().random())
         }
     }
 
-    fun deleteEmployee(position: Int) {
-        mutableEmployees.value = mutableEmployees.value?.toMutableList()?.apply {
+    fun deleteItem(position: Int) {
+        mutableItems.value = mutableItems.value?.toMutableList()?.apply {
+            Log.d("MainViewModel", "position to remove=$position")
             removeAt(position)
+        }
+    }
+
+    fun renameItem(position: Int, newName: String) {
+        val newItem = when (val item = mutableItems.value?.get(position)) {
+            is Employee -> item.copy(name = newName)
+            is Department -> item.copy(name = newName)
+            else -> throw ClassNotFoundException()
+        }
+
+        mutableItems.value = mutableItems.value?.toMutableList()?.apply {
+            set(position, newItem)
         }
     }
 }
