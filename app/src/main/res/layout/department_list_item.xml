@@ -22,10 +22,10 @@
 
     <ImageView
         android:id="@+id/more_button_department"
-        style="@style/Widget.Material3.Button.IconButton"
-        android:layout_width="@dimen/delete_button"
-        android:layout_height="@dimen/delete_button"
+        android:layout_width="@dimen/more"
+        android:layout_height="@dimen/more"
         android:contentDescription="@string/more_button"
+        android:layout_marginEnd="8dp"
         android:src="@drawable/ic_more"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
