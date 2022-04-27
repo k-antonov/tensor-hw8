@@ -63,7 +63,6 @@ class ItemsAdapter(
         }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-//        val listener = PopupMenuListener(deleteAction, renameAction, position)
         when (holder) {
             is EmployeeViewHolder -> {
                 with(holder) {
@@ -76,15 +75,18 @@ class ItemsAdapter(
                         .centerCrop()
                         .into(photo)
 
-                    val listener = PopupMenuListener(deleteAction, renameAction, adapterPosition)
-                    moreButton.setOnClickListener(listener)
+                    moreButton.setOnClickListener {
+                        PopupMenuListener.listen(it, deleteAction, renameAction, adapterPosition)
+                    }
                 }
             }
             is DepartmentViewHolder -> {
                 with(holder) {
                     departmentTitle.text = (items[position] as Department).name
-                    val listener = PopupMenuListener(deleteAction, renameAction, adapterPosition)
-                    moreButton.setOnClickListener(listener)
+
+                    moreButton.setOnClickListener {
+                        PopupMenuListener.listen(it, deleteAction, renameAction, adapterPosition)
+                    }
                 }
             }
         }
